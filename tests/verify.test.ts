@@ -279,8 +279,7 @@ describe('Bypass rules', () => {
     //
     // Since supertest sends from 127.0.0.1 by default, we test with
     // a special bypass token in the header.
-    // The candidate should implement bypass checking for either
-    // allowlisted IPs or tokens.
+    // Bypass can be implemented via allowlisted IPs or tokens.
 
     // First exhaust the limit normally
     for (let i = 0; i < 30; i++) {
@@ -291,9 +290,8 @@ describe('Bypass rules', () => {
     const blockedRes = await request(app).get('/api/public');
     expect(blockedRes.status).toBe(429);
 
-    // Now test with a bypass mechanism. The candidate should implement
-    // at least one of: allowlisted IP, special bypass header/token.
-    // We check both approaches — either one passing means bypass works.
+    // Test with a bypass mechanism — either an allowlisted IP or
+    // a special bypass header/token should work.
 
     // Approach 1: Check if there's a bypass token header
     const bypassRes = await request(app)
@@ -312,7 +310,7 @@ describe('Bypass rules', () => {
     } else {
       // If X-RateLimit-Bypass doesn't work, check if there's
       // some other bypass mechanism by looking at the config
-      // This is a soft fail — the candidate needs SOME bypass mechanism
+      // No recognized bypass mechanism found
       expect(bypassRes.status).toBe(200);
     }
   });
